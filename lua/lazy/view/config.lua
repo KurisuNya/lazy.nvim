@@ -27,12 +27,12 @@ end
 M.dimmed_commits = { "build", "ci", "chore", "doc", "test" }
 
 M.keys = {
-  hover = "K",
   diff = "d",
   close = "q",
   details = "<cr>",
   profile_sort = "<C-s>",
   profile_filter = "<C-f>",
+  hover = "<C-h>",
   abort = "<C-c>",
 }
 

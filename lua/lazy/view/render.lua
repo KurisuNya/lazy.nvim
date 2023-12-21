@@ -173,11 +173,11 @@ function M:help()
   self:append("You can press "):append("<CR>", "LazySpecial"):append(" on a plugin to show its details."):nl():nl()
 
   self:append("Most properties can be hovered with ")
-  self:append("<K>", "LazySpecial")
+  self:append("<C-h>", "LazySpecial")
   self:append(" to open links, help files, readmes and git commits."):nl()
   self
     :append("When hovering with ")
-    :append("<K>", "LazySpecial")
+    :append("<C-h>", "LazySpecial")
     :append(" on a plugin anywhere else, a diff will be opened if there are updates")
     :nl()
   self:append("or the plugin was just updated. Otherwise the plugin webpage will open."):nl():nl()
