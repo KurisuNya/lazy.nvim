@@ -1,4 +1,4 @@
-*lazy.nvim.txt*        For Neovim >= 0.8.0        Last change: 2024 January 23
+*lazy.nvim.txt*         For Neovim >= 0.8.0         Last change: 2024 March 07
 
 ==============================================================================
 Table of Contents                                *lazy.nvim-table-of-contents*
@@ -90,6 +90,7 @@ Nextstep is to add **lazy.nvim** below the code added in the prior step in
 >lua
     -- Example using a list of specs with the default options
     vim.g.mapleader = " " -- Make sure to set `mapleader` before lazy so your mappings are correct
+    vim.g.maplocalleader = "\\" -- Same for `maplocalleader`
     
     require("lazy").setup({
       "folke/which-key.nvim",
@@ -653,7 +654,7 @@ Any command can have a **bang** to make the command wait till it finished. For
 example, if you want to sync lazy from the cmdline, you can use:
 
 >shell
-    $ nvim --headless "+Lazy! sync" +qa
+    nvim --headless "+Lazy! sync" +qa
 <
 
 `opts` is a table with the following key-values:
@@ -923,7 +924,7 @@ Click to see all highlight groups ~
 
   LazyDimmed          Conceal                  property
 
-  LazyDir             _@text.reference_        directory
+  LazyDir             _@markup.link_           directory
 
   LazyH1              IncSearch                homebutton
 
@@ -954,13 +955,13 @@ Click to see all highlight groups ~
 
   LazyReasonPlugin    Special                  
 
-  LazyReasonRequire   _@parameter_             
+  LazyReasonRequire   _@variable.parameter_    
 
   LazyReasonRuntime   _@macro_                 
 
   LazyReasonSource    Character                
 
-  LazyReasonStart     _@field_                 
+  LazyReasonStart     _@variable.member_       
 
   LazySpecial         _@punctuation.special_   
 
@@ -968,7 +969,7 @@ Click to see all highlight groups ~
 
   LazyTaskOutput      MsgArea                  task output
 
-  LazyUrl             _@text.reference_        url
+  LazyUrl             _@markup.link_           url
 
   LazyValue           _@string_                valueof a property
   ---------------------------------------------------------------------------------

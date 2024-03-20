@@ -177,7 +177,7 @@ M.defaults = {
   debug = false,
 }
 
-M.version = "10.16.0" -- x-release-please-version
+M.version = "10.17.0" -- x-release-please-version
 
 M.ns = vim.api.nvim_create_namespace("lazy")
 
@@ -198,6 +198,9 @@ M.me = nil
 
 ---@type string
 M.mapleader = nil
+
+---@type string
+M.maplocalleader = nil
 
 function M.headless()
   return #vim.api.nvim_list_uis() == 0
@@ -245,6 +248,7 @@ function M.setup(opts)
   -- disable plugin loading since we do all of that ourselves
   vim.go.loadplugins = false
   M.mapleader = vim.g.mapleader
+  M.maplocalleader = vim.g.maplocalleader
 
   if M.headless() then
     require("lazy.view.commands").setup()
