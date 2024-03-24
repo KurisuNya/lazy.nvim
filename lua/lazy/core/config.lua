@@ -17,7 +17,7 @@ M.defaults = {
   -- leave nil when passing the spec as the first argument to setup()
   spec = nil, ---@type LazySpec
   lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json", -- lockfile generated after running update.
-  concurrency = jit.os:find("Windows") and (vim.loop.available_parallelism() * 2) or nil, ---@type number limit the maximum amount of concurrent tasks
+  concurrency = jit.os:find("Windows") and (vim.uv.available_parallelism() * 2) or nil, ---@type number limit the maximum amount of concurrent tasks
   git = {
     -- defaults for the `Lazy log` command
     -- log = { "--since=3 days ago" }, -- show commits from the last 3 days
@@ -177,7 +177,7 @@ M.defaults = {
   debug = false,
 }
 
-M.version = "10.17.0" -- x-release-please-version
+M.version = "10.19.0" -- x-release-please-version
 
 M.ns = vim.api.nvim_create_namespace("lazy")
 

@@ -2,7 +2,7 @@
 local M = setmetatable({}, { __index = require("lazy.core.util") })
 
 function M.file_exists(file)
-  return vim.loop.fs_stat(file) ~= nil
+  return vim.uv.fs_stat(file) ~= nil
 end
 
 ---@param opts? LazyFloatOptions
@@ -19,13 +19,15 @@ function M.wo(win, k, v)
   end
 end
 
-function M.open(uri)
-  if M.file_exists(uri) then
+---@param opts? {system?:boolean}
+function M.open(uri, opts)
+  opts = opts or {}
+  if not opts.system and M.file_exists(uri) then
     return M.float({ style = "", file = uri })
   end
   local Config = require("lazy.core.config")
   local cmd
-  if Config.options.ui.browser then
+  if not opts.system and Config.options.ui.browser then
     cmd = { Config.options.ui.browser, uri }
   elseif vim.fn.has("win32") == 1 then
     cmd = { "explorer", uri }
@@ -71,7 +73,7 @@ end
 ---@param fn F
 ---@return F
 function M.throttle(ms, fn)
-  local timer = vim.loop.new_timer()
+  local timer = vim.uv.new_timer()
   local running = false
   local first = true
 

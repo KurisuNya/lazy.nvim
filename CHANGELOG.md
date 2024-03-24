@@ -1,5 +1,40 @@
 # Changelog
 
+## [10.19.0](https://github.com/folke/lazy.nvim/compare/v10.18.3...v10.19.0) (2024-03-22)
+
+
+### Features
+
+* **util:** option to force system app for util.open ([66466a2](https://github.com/folke/lazy.nvim/commit/66466a2594ab0c446193772a68c236c7e4e02ade))
+
+## [10.18.3](https://github.com/folke/lazy.nvim/compare/v10.18.2...v10.18.3) (2024-03-22)
+
+
+### Bug Fixes
+
+* **cache:** vim.loop fallback ([#1375](https://github.com/folke/lazy.nvim/issues/1375)) ([9131ea4](https://github.com/folke/lazy.nvim/commit/9131ea4c4ae59e347716659088a76d9b9ce3b2f5))
+
+## [10.18.2](https://github.com/folke/lazy.nvim/compare/v10.18.1...v10.18.2) (2024-03-22)
+
+
+### Bug Fixes
+
+* **ui:** Add "bot" to dimmed commands list ([#1367](https://github.com/folke/lazy.nvim/issues/1367)) ([b6f7ef8](https://github.com/folke/lazy.nvim/commit/b6f7ef856b36c5edbe9f03e3a8554b97c458c953))
+
+## [10.18.1](https://github.com/folke/lazy.nvim/compare/v10.18.0...v10.18.1) (2024-03-22)
+
+
+### Bug Fixes
+
+* uv shim was not falling back to vim.loop ([#1370](https://github.com/folke/lazy.nvim/issues/1370)) ([61dddae](https://github.com/folke/lazy.nvim/commit/61dddaec58f8594e40e95a8d5069ce7e493089df))
+
+## [10.18.0](https://github.com/folke/lazy.nvim/compare/v10.17.0...v10.18.0) (2024-03-22)
+
+
+### Features
+
+* refactor all vim.loop -&gt; vim.uv and add a shim when needed ([9e157df](https://github.com/folke/lazy.nvim/commit/9e157df077d24654d0cdefe08158cd4f76e85fe8))
+
 ## [10.17.0](https://github.com/folke/lazy.nvim/compare/v10.16.0...v10.17.0) (2024-03-07)
 
 
