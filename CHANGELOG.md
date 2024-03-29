@@ -1,5 +1,39 @@
 # Changelog
 
+## [10.20.3](https://github.com/folke/lazy.nvim/compare/v10.20.2...v10.20.3) (2024-03-28)
+
+
+### Bug Fixes
+
+* **ui:** disable backdrop when Neovim is transparent ([0ccf031](https://github.com/folke/lazy.nvim/commit/0ccf0312270d2d976ec551a9034bf05720f2486b))
+
+## [10.20.2](https://github.com/folke/lazy.nvim/compare/v10.20.1...v10.20.2) (2024-03-27)
+
+
+### Bug Fixes
+
+* **ui:** only enable backdrop when guicolors is set. Fixes [#1387](https://github.com/folke/lazy.nvim/issues/1387) ([d37a76b](https://github.com/folke/lazy.nvim/commit/d37a76b87137c777f3d778ed03729d7f332a85f0))
+* **ui:** special handling for floats closed before VimEnter. Seems that WinClosed events dont execute before that. Fixes [#1390](https://github.com/folke/lazy.nvim/issues/1390) ([eefb897](https://github.com/folke/lazy.nvim/commit/eefb8974d6a092da6e1631855e4288499b651fdd))
+
+## [10.20.1](https://github.com/folke/lazy.nvim/compare/v10.20.0...v10.20.1) (2024-03-26)
+
+
+### Bug Fixes
+
+* **ui:** properly cleanup on `:quit`. Fixes [#1385](https://github.com/folke/lazy.nvim/issues/1385) ([79e2e85](https://github.com/folke/lazy.nvim/commit/79e2e8593410f199b85f5d61a83704a16169282f))
+
+## [10.20.0](https://github.com/folke/lazy.nvim/compare/v10.19.0...v10.20.0) (2024-03-26)
+
+
+### Features
+
+* **ui:** backdrop for the lazy floating window. Can be disabled with `opts.ui.backdrop` ([a6b74f3](https://github.com/folke/lazy.nvim/commit/a6b74f30d5aab79a40d932f449c0aa5d4a0c6934))
+
+
+### Bug Fixes
+
+* **types:** fixed type for `version`. Fixes [#1381](https://github.com/folke/lazy.nvim/issues/1381) ([eade87f](https://github.com/folke/lazy.nvim/commit/eade87fb837d6cdeef94587ce5e8c8dfb9f88920))
+
 ## [10.19.0](https://github.com/folke/lazy.nvim/compare/v10.18.3...v10.19.0) (2024-03-22)
 
 
