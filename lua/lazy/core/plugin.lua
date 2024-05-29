@@ -557,9 +557,7 @@ function M.load()
   -- load specs
   Util.track("spec")
   Config.spec = Spec.new()
-<<<<<<< HEAD
   Config.spec:parse({ vim.deepcopy(Config.options.spec), { "KurisuNya/lazy.nvim" } })
-=======
   Config.spec:parse({
     vim.deepcopy(Config.options.spec),
     {
@@ -568,9 +566,8 @@ function M.load()
         return Config.options.local_spec and vim.fn.filereadable(M.LOCAL_SPEC) == 1
       end,
     },
-    { "folke/lazy.nvim" },
+    { "KurisuNya/lazy.nvim" },
   })
->>>>>>> upstream/main
 
   -- override some lazy props
   local lazy = Config.spec.plugins["lazy.nvim"]
