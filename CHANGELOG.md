@@ -1,5 +1,42 @@
 # Changelog
 
+## [10.23.0](https://github.com/folke/lazy.nvim/compare/v10.22.2...v10.23.0) (2024-06-07)
+
+
+### Features
+
+* **plugin:** `opts_extend` can be a list of dotted keys that will be extended instead of merged ([1f7b720](https://github.com/folke/lazy.nvim/commit/1f7b720cffa6d8f00ebb040bc60e8e056e0a6002))
+* **util:** opts merging now supports lists extending by tagging a table with __extend = true. Use with care ([74fd361](https://github.com/folke/lazy.nvim/commit/74fd3611f291a2506c5534109689bb7b028f0566))
+
+## [10.22.2](https://github.com/folke/lazy.nvim/compare/v10.22.1...v10.22.2) (2024-06-06)
+
+
+### Bug Fixes
+
+* **keys:** buffer-local nop mappings ([ff90417](https://github.com/folke/lazy.nvim/commit/ff904178089582f90fdc625493f3d3bddbefd6ea))
+* **keys:** never lazy-load `&lt;nop&gt;` or empty rhs keymaps ([3e4c795](https://github.com/folke/lazy.nvim/commit/3e4c795cec32481bc6d0b30c05125fdf7ef2d412))
+
+## [10.22.1](https://github.com/folke/lazy.nvim/compare/v10.22.0...v10.22.1) (2024-06-02)
+
+
+### Bug Fixes
+
+* force new release ([9242edb](https://github.com/folke/lazy.nvim/commit/9242edb73939e7508dbd827e9c013579391f0668))
+
+## [10.22.0](https://github.com/folke/lazy.nvim/compare/v10.21.2...v10.22.0) (2024-06-01)
+
+
+### Features
+
+* set `vim.env.LAZY` to lazy root ([6a141a6](https://github.com/folke/lazy.nvim/commit/6a141a6dbb6f6b5495ef6716c0dce898546d7b2c))
+
+## [10.21.2](https://github.com/folke/lazy.nvim/compare/v10.21.1...v10.21.2) (2024-05-31)
+
+
+### Bug Fixes
+
+* **ui:** deduplicate plugins when selecting multiple ([#1491](https://github.com/folke/lazy.nvim/issues/1491)) ([b77aaa0](https://github.com/folke/lazy.nvim/commit/b77aaa08cb5b178ed8662765caa41c70ff254a4c))
+
 ## [10.21.1](https://github.com/folke/lazy.nvim/compare/v10.21.0...v10.21.1) (2024-05-31)
 
 

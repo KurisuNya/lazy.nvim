@@ -182,7 +182,7 @@ M.defaults = {
   debug = false,
 }
 
-M.version = "10.21.1" -- x-release-please-version
+M.version = "10.23.0" -- x-release-please-version
 
 M.ns = vim.api.nvim_create_namespace("lazy")
 
@@ -220,6 +220,7 @@ function M.setup(opts)
   end
   table.insert(M.options.install.colorscheme, "habamax")
 
+  -- root
   M.options.root = Util.norm(M.options.root)
   if type(M.options.dev.path) == "string" then
     M.options.dev.path = Util.norm(M.options.dev.path)
@@ -236,6 +237,7 @@ function M.setup(opts)
   M.me = debug.getinfo(1, "S").source:sub(2)
   M.me = Util.norm(vim.fn.fnamemodify(M.me, ":p:h:h:h:h"))
   if M.options.performance.rtp.reset then
+    ---@type vim.Option
     vim.opt.rtp = {
       vim.fn.stdpath("config"),
       vim.fn.stdpath("data") .. "/site",
