@@ -232,6 +232,15 @@ function Spec:remove_fragments(id, opts)
   else
     local plugin = self.plugins[id]
     repeat
+      if plugin._.fpid then
+        local parent = self.fragments[plugin._.fpid]
+        if parent then
+          parent._.fdeps = vim.tbl_filter(function(fid)
+            return fid ~= plugin._.fid
+          end, parent._.fdeps)
+          self.dirty[parent.name] = true
+        end
+      end
       fids[#fids + 1] = plugin._.fid
       plugin = plugin._.super
     until not plugin
@@ -318,8 +327,10 @@ function Spec:fix_disabled()
       self.disabled[plugin.name] = plugin
     end
   end
+  self:rebuild()
 
-  -- rebuild any plugin specs that were modified
+  -- check optional plugins again
+  self:fix_optional()
   self:rebuild()
 end
 
@@ -380,10 +391,18 @@ function Spec:import(spec)
   if spec.import == "lazy" then
     return self:error("You can't name your plugins module `lazy`.")
   end
-  if type(spec.import) ~= "string" then
+  if type(spec.import) == "function" then
+    if not spec.name then
+      return self:error("Invalid import spec. Missing name: " .. vim.inspect(spec))
+    end
+  elseif type(spec.import) ~= "string" then
     return self:error("Invalid import spec. `import` should be a string: " .. vim.inspect(spec))
   end
-  if vim.tbl_contains(self.modules, spec.import) then
+
+  local import_name = spec.name or spec.import
+  ---@cast import_name string
+
+  if vim.tbl_contains(self.modules, import_name) then
     return
   end
   if spec.cond == false or (type(spec.cond) == "function" and not spec.cond()) then
@@ -393,36 +412,34 @@ function Spec:import(spec)
     return
   end
 
-  self.modules[#self.modules + 1] = spec.import
+  self.modules[#self.modules + 1] = import_name
+
+  local import = spec.import
 
   local imported = 0
 
-  ---@type string[]
-  local modnames = {}
+  ---@type (string|(fun():LazyPluginSpec))[]
+  local modspecs = {}
 
-  if spec.import == M.LOCAL_SPEC then
-    modnames = { spec.import }
-  else
-    Util.lsmod(spec.import, function(modname)
-      modnames[#modnames + 1] = modname
+  if type(import) == "string" then
+    Util.lsmod(import, function(modname)
+      modspecs[#modspecs + 1] = modname
     end)
-    table.sort(modnames)
+    table.sort(modspecs)
+  else
+    modspecs = { spec.import }
   end
 
-  for _, modname in ipairs(modnames) do
+  for _, modspec in ipairs(modspecs) do
     imported = imported + 1
+    local modname = type(modspec) == "string" and modspec or import_name
     Util.track({ import = modname })
     self.importing = modname
     -- unload the module so we get a clean slate
     ---@diagnostic disable-next-line: no-unknown
     package.loaded[modname] = nil
     Util.try(function()
-      local mod = nil
-      if modname == M.LOCAL_SPEC then
-        mod = M.local_spec()
-      else
-        mod = require(modname)
-      end
+      local mod = type(modspec) == "function" and modspec() or require(modspec)
       if type(mod) ~= "table" then
         self.importing = nil
         return self:error(
@@ -543,13 +560,41 @@ function M.update_state()
   end
 end
 
-function M.local_spec()
-  local filepath = vim.fn.fnamemodify(".lazy.lua", ":p")
-  local file = vim.secure.read(filepath)
+---@param path string
+function M.local_spec(path)
+  local file = vim.secure.read(path)
   if file then
     return loadstring(file)()
   end
   return {}
+end
+
+---@return LazySpecImport?
+function M.find_local_spec()
+  if not Config.options.local_spec then
+    return
+  end
+  local path = vim.uv.cwd()
+  while path ~= "" do
+    local file = path .. "/" .. M.LOCAL_SPEC
+    if vim.fn.filereadable(file) == 1 then
+      return {
+        name = vim.fn.fnamemodify(file, ":~:."),
+        import = function()
+          local data = vim.secure.read(file)
+          if data then
+            return loadstring(data)()
+          end
+          return {}
+        end,
+      }
+    end
+    local p = vim.fn.fnamemodify(path, ":h")
+    if p == path then
+      break
+    end
+    path = p
+  end
 end
 
 function M.load()
@@ -557,17 +602,14 @@ function M.load()
   -- load specs
   Util.track("spec")
   Config.spec = Spec.new()
-  Config.spec:parse({ vim.deepcopy(Config.options.spec), { "KurisuNya/lazy.nvim" } })
-  Config.spec:parse({
+
+  local specs = {
     vim.deepcopy(Config.options.spec),
-    {
-      import = ".lazy.lua",
-      cond = function()
-        return Config.options.local_spec and vim.fn.filereadable(M.LOCAL_SPEC) == 1
-      end,
-    },
-    { "KurisuNya/lazy.nvim" },
-  })
+  }
+  specs[#specs + 1] = M.find_local_spec()
+  specs[#specs + 1] = { "KurisuNya/lazy.nvim" }
+
+  Config.spec:parse(specs)
 
   -- override some lazy props
   local lazy = Config.spec.plugins["lazy.nvim"]
