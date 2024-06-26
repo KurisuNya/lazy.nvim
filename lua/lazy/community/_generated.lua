@@ -254,7 +254,7 @@ return
   }, {
     name = "indent-blankline.nvim",
     url = "lukas-reineke/indent-blankline.nvim",
-    version = "3.6.3-1"
+    version = "3.7.0-1"
   }, {
     name = "kai.nvim",
     url = "Kamilcuk/kai.nvim",
@@ -262,7 +262,7 @@ return
   }, {
     name = "lazy.nvim",
     url = "folke/lazy.nvim",
-    version = "11.2.1-1"
+    version = "11.4.1-1"
   }, {
     name = "leetcode.nvim",
     url = "kawre/leetcode.nvim",
@@ -342,7 +342,7 @@ return
   }, {
     name = "multicursors.nvim",
     url = "smoka7/multicursors.nvim",
-    version = "1.0.0-1"
+    version = "2.0.0-1"
   }, {
     name = "my-awesome-plugin.nvim",
     url = "S1M0N38/my-awesome-plugin.nvim",
@@ -374,7 +374,7 @@ return
   }, {
     name = "neorg",
     url = "nvim-neorg/neorg",
-    version = "8.7.1-1"
+    version = "8.8.0-1"
   }, {
     name = "neorg-telescope",
     url = "nvim-neorg/neorg-telescope",
@@ -610,7 +610,7 @@ return
   }, {
     name = "rocks-config.nvim",
     url = "nvim-neorocks/rocks-config.nvim",
-    version = "2.1.0-1"
+    version = "2.1.1-1"
   }, {
     name = "rocks-dev.nvim",
     url = "nvim-neorocks/rocks-dev.nvim",
