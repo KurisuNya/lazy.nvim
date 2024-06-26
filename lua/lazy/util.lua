@@ -231,6 +231,18 @@ function M.markdown(msg, opts)
   )
 end
 
+---@async
+---@param ms number
+function M.sleep(ms)
+  local continue = false
+  vim.defer_fn(function()
+    continue = true
+  end, ms)
+  while not continue do
+    coroutine.yield()
+  end
+end
+
 function M._dump(value, result)
   local t = type(value)
   if t == "number" or t == "boolean" then
@@ -241,22 +253,21 @@ function M._dump(value, result)
     table.insert(result, value._raw)
   elseif t == "table" then
     table.insert(result, "{")
-    local i = 1
+    for _, v in ipairs(value) do
+      M._dump(v, result)
+      table.insert(result, ",")
+    end
     ---@diagnostic disable-next-line: no-unknown
     for k, v in pairs(value) do
-      if k == i then
-      elseif type(k) == "string" then
+      if type(k) == "string" then
         if k:match("^[a-zA-Z]+$") then
           table.insert(result, ("%s="):format(k))
         else
           table.insert(result, ("[%q]="):format(k))
         end
-      else
-        table.insert(result, k .. "=")
+        M._dump(v, result)
+        table.insert(result, ",")
       end
-      M._dump(v, result)
-      table.insert(result, ",")
-      i = i + 1
     end
     table.insert(result, "}")
   else

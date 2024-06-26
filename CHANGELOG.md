@@ -1,5 +1,120 @@
 # Changelog
 
+## [11.4.1](https://github.com/folke/lazy.nvim/compare/v11.4.0...v11.4.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* **health:** show what plugins need luarocks and if none, use warnings instead of errors. See [#1551](https://github.com/folke/lazy.nvim/issues/1551) ([0d9fd63](https://github.com/folke/lazy.nvim/commit/0d9fd636beb9e3783edcdba2b31932280bdc05f7))
+
+## [11.4.0](https://github.com/folke/lazy.nvim/compare/v11.3.0...v11.4.0) (2024-06-25)
+
+
+### Features
+
+* **pkg:** utils to get rock to url mappings ([be74a8a](https://github.com/folke/lazy.nvim/commit/be74a8a535fea6a480143fb52b4d6958d9e2da94))
+* **rocks:** simple rockspecs are now fully resolved by lazy without luarocks. See [#1548](https://github.com/folke/lazy.nvim/issues/1548) ([6b8bf58](https://github.com/folke/lazy.nvim/commit/6b8bf58ebf9114f8f31fb78cbf057e452cb0e540))
+
+
+### Bug Fixes
+
+* **meta:** only tag new top-level pkg fragment as optional ([25981e1](https://github.com/folke/lazy.nvim/commit/25981e1f3927ee0b22aefea122ebac1cddafdca6))
+
+## [11.3.0](https://github.com/folke/lazy.nvim/compare/v11.2.1...v11.3.0) (2024-06-25)
+
+
+### Features
+
+* **rocks:** use hererocks to install luarocks when luarocks is not found ([d87da76](https://github.com/folke/lazy.nvim/commit/d87da7667939deff2ed8b5a3c198d9ea2e03fee4))
+
+
+### Bug Fixes
+
+* **fragments:** check for empty plugin names ([dea1f68](https://github.com/folke/lazy.nvim/commit/dea1f687fe6e15eb3098557a69d44231ebcb6cf5))
+* **meta:** no need to check for old_dir when frags were not built yet. Fixes [#1550](https://github.com/folke/lazy.nvim/issues/1550) ([24c8322](https://github.com/folke/lazy.nvim/commit/24c832213c505a0d7ca021c0e14bba43e0fef75c))
+* **rocks:** better errors / warnings when something goes wrong with luarocks ([7d3f691](https://github.com/folke/lazy.nvim/commit/7d3f69104fb39d3e6e12f808204b3a7b38f86916))
+* **rocks:** hererocks paths on windows ([45cd8d3](https://github.com/folke/lazy.nvim/commit/45cd8d3f0fab197e6e0391cffa38879bdda4c2cd))
+* **rocks:** windows ([4ca3e9a](https://github.com/folke/lazy.nvim/commit/4ca3e9aa51c03dda73b40ec9901deac5d4f11c69))
+
+## [11.2.1](https://github.com/folke/lazy.nvim/compare/v11.2.0...v11.2.1) (2024-06-24)
+
+
+### Bug Fixes
+
+* **loader:** no need to check plugin.dir in auto_load ([62a47b9](https://github.com/folke/lazy.nvim/commit/62a47b921fbffb3c1c8088a731029ae234f98851))
+
+## [11.2.0](https://github.com/folke/lazy.nvim/compare/v11.1.0...v11.2.0) (2024-06-24)
+
+
+### Features
+
+* rewrite some known plugins to lazy specs instead of luarocks (plenary.nvim). Closes [#1540](https://github.com/folke/lazy.nvim/issues/1540) ([a089d43](https://github.com/folke/lazy.nvim/commit/a089d43dba7438532c56e1c582c5974713bd48f8))
+
+
+### Performance Improvements
+
+* minimize meta rebuild when loading specs ([1446f6c](https://github.com/folke/lazy.nvim/commit/1446f6cfbb4ca0a7ee0baf3acc86ab5e4be5ab22))
+
+## [11.1.0](https://github.com/folke/lazy.nvim/compare/v11.0.1...v11.1.0) (2024-06-24)
+
+
+### Features
+
+* make it easier to disable luarocks ([07c067a](https://github.com/folke/lazy.nvim/commit/07c067a1a82bb0988179e1887bba9df4721b3ea7))
+* show rockspec deps in plugin details ([656d3d1](https://github.com/folke/lazy.nvim/commit/656d3d1f5b5910e50af3d67286999ff7088ebfb6))
+
+
+### Bug Fixes
+
+* **health:** added luarocks check to health ([0f45c0d](https://github.com/folke/lazy.nvim/commit/0f45c0d0623b4850716898a5e399c844466690f6))
+* **health:** only check for luarocks when luarocks is enabled. ([ae4881d](https://github.com/folke/lazy.nvim/commit/ae4881d36e7f589124f8eb7febfc6a8b58f8e027))
+* **health:** show missing luarocks as warning ([e3ee51b](https://github.com/folke/lazy.nvim/commit/e3ee51b6680a116649da56f6c651d53c3e47be4e))
+* **runner:** sync package specs after installing and before building ([105d480](https://github.com/folke/lazy.nvim/commit/105d4805ad58875d0b0fafe1185679539b8bc69a))
+
+## [11.0.1](https://github.com/folke/lazy.nvim/compare/v11.0.0...v11.0.1) (2024-06-24)
+
+
+### Bug Fixes
+
+* **rocks:** dont trigger rebuild for luarocks when build is overriden ([146de4e](https://github.com/folke/lazy.nvim/commit/146de4e801f9169e79052a51365eaae789094611))
+
+## [11.0.0](https://github.com/folke/lazy.nvim/compare/v10.24.3...v11.0.0) (2024-06-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* new docs for v11.0
+
+### Features
+
+* added support for plugin packages by lazy, rockspec and packspec ([3be55a4](https://github.com/folke/lazy.nvim/commit/3be55a46158cde17e2b853e531d260f3738a5346))
+* **build:** build files and functions are now async. use coroutine.yield to interrupt and report progress ([368747b](https://github.com/folke/lazy.nvim/commit/368747bc9a314b4f0745547ebdcc3fbc4d100c0a))
+* luarocks support ([f1ba2e3](https://github.com/folke/lazy.nvim/commit/f1ba2e3d057ae5c03d04134a9d538d0b2251f13b))
+* **meta:** check for dir changes for plugins already added to the rtp ([ee2ca39](https://github.com/folke/lazy.nvim/commit/ee2ca39f672a2d6f4cbb683b525e6b3d91f3fc0c))
+* new docs for v11.0 ([183f59e](https://github.com/folke/lazy.nvim/commit/183f59e2e85dea0c38ed7d16c7c7e543c0b739c7))
+* packspec ([8eba74c](https://github.com/folke/lazy.nvim/commit/8eba74c3fc41e1a364225f744022f8b3ff11d796))
+* **pkg:** import package specs in the scope of the plugin ([c1912e2](https://github.com/folke/lazy.nvim/commit/c1912e23481ba72a8d8f7a5c736f5e2547e6853e))
+* rewrite of spec resolving ([75ffe56](https://github.com/folke/lazy.nvim/commit/75ffe56f70faac43f077796b91178d2f1419f8ce))
+* spec.rocks is no longer needed & added support for installing any luarock ([fcfd548](https://github.com/folke/lazy.nvim/commit/fcfd54835da5af64c6046060f4db62c4626d209c))
+
+
+### Bug Fixes
+
+* **fragments:** prevent adding the same spec instance more than once ([dbffad6](https://github.com/folke/lazy.nvim/commit/dbffad6f44674a3c1b23c649a0abab299d7349d8))
+* **luarocks:** cleanup luarocks when deleting a plugin ([b73c57e](https://github.com/folke/lazy.nvim/commit/b73c57ed9ec8e63bbb867d21a3f3a865224b25d4))
+* **pkg:** automatically update pkgs when editing a pkg file ([7b6ddbf](https://github.com/folke/lazy.nvim/commit/7b6ddbfc137ad5d8b178a3bbf5a1338630f30625))
+* **pkg:** correctly pre-load package specs and remove them when needed during resolve ([4326d4b](https://github.com/folke/lazy.nvim/commit/4326d4b487d4facc19b375ca30cd633cf56d88ed))
+* **pkg:** make sure state dir exists ([3515cb5](https://github.com/folke/lazy.nvim/commit/3515cb518f61c02b41cd3a8d8135c9a5862a982f))
+* **pkg:** versioning and reload specs when pkg-cache is dirty ([fd8229d](https://github.com/folke/lazy.nvim/commit/fd8229d6e312e83d6bafda256adf0e650b13ca01))
+* **rocks:** only build rockspec when it has deps or an advanced build step ([9a6c219](https://github.com/folke/lazy.nvim/commit/9a6c21982638b6e2ea498514baee9186c0e60d82))
+
+## [10.24.3](https://github.com/folke/lazy.nvim/compare/v10.24.2...v10.24.3) (2024-06-23)
+
+
+### Bug Fixes
+
+* **util:** dump ([025520d](https://github.com/folke/lazy.nvim/commit/025520d083c61baa7cd1f45807f5fe1ac9fbb50d))
+
 ## [10.24.2](https://github.com/folke/lazy.nvim/compare/v10.24.1...v10.24.2) (2024-06-16)
 
 

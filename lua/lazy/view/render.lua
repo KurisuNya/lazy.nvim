@@ -394,6 +394,11 @@ function M:diagnostics(plugin)
         message = task.name .. " failed",
         severity = vim.diagnostic.severity.ERROR,
       })
+    elseif task.warn then
+      self:diagnostic({
+        message = task.name .. " warning",
+        severity = vim.diagnostic.severity.WARN,
+      })
     end
   end
 end
@@ -434,6 +439,22 @@ function M:plugin(plugin)
     { name = plugin.name, from = plugin_start, to = self:row() - 1, kind = plugin._.kind }
 end
 
+---@param str string
+---@param hl? string|Extmark
+---@param opts? {indent?: number, prefix?: string, wrap?: boolean}
+function M:markdown(str, hl, opts)
+  local lines = vim.split(str, "\n")
+  for _, line in ipairs(lines) do
+    self:append(line, hl, opts):highlight({
+      ["`.-`"] = "@markup.raw.markdown_inline",
+      ["%*.-%*"] = "LazyItalic",
+      ["%*%*.-%*%*"] = "LazyBold",
+      ["^%s*-"] = "Special",
+    })
+    self:nl()
+  end
+end
+
 ---@param plugin LazyPlugin
 function M:tasks(plugin)
   for _, task in ipairs(plugin._.tasks or {}) do
@@ -443,13 +464,16 @@ function M:tasks(plugin)
       self:nl()
     end
     if task.error then
-      self:append(vim.trim(task.error), "LazyTaskError", { indent = 6 })
-      self:nl()
-    elseif task.name == "log" then
+      self:markdown(task.error, "LazyTaskError", { indent = 6 })
+    end
+    if task.warn then
+      self:markdown(task.warn, "LazyTaskWarning", { indent = 6 })
+    end
+    if not task.error and not task.warn and task.name == "log" then
       self:log(task)
-    elseif self.view:is_selected(plugin) and task.output ~= "" and task.output ~= task.error then
-      self:append(vim.trim(task.output), "LazyTaskOutput", { indent = 6 })
-      self:nl()
+    end
+    if (self.view:is_selected(plugin) or (task.error or task.warn)) and task.output ~= task.error then
+      self:markdown(vim.trim(task.output), "LazyTaskOutput", { indent = 6 })
     end
   end
 end
@@ -461,27 +485,31 @@ function M:log(task)
     local lines = vim.split(log, "\n")
     for _, line in ipairs(lines) do
       local ref, msg, time = line:match("^(%w+) (.*) (%(.*%))$")
-      if msg:find("^%S+!:") then
-        self:diagnostic({ message = "Breaking Changes", severity = vim.diagnostic.severity.WARN })
-      end
-      self:append(ref:sub(1, 7) .. " ", "LazyCommit", { indent = 6 })
-
-      local dimmed = false
-      for _, dim in ipairs(ViewConfig.dimmed_commits) do
-        if msg:find("^" .. dim) then
-          dimmed = true
+      if msg then
+        if msg:find("^%S+!:") then
+          self:diagnostic({ message = "Breaking Changes", severity = vim.diagnostic.severity.WARN })
         end
+        self:append(ref:sub(1, 7) .. " ", "LazyCommit", { indent = 6 })
+
+        local dimmed = false
+        for _, dim in ipairs(ViewConfig.dimmed_commits) do
+          if msg:find("^" .. dim) then
+            dimmed = true
+          end
+        end
+        self:append(vim.trim(msg), dimmed and "LazyDimmed" or nil):highlight({
+          ["#%d+"] = "LazyCommitIssue",
+          ["^%S+:"] = dimmed and "Bold" or "LazyCommitType",
+          ["^%S+(%(.*%))!?:"] = "LazyCommitScope",
+          ["`.-`"] = "@markup.raw.markdown_inline",
+          ["%*.-%*"] = "Italic",
+          ["%*%*.-%*%*"] = "Bold",
+        })
+        self:append(" " .. time, "LazyComment")
+        self:nl()
+        -- else
+        --   self:append(line, "LazyTaskOutput", { indent = 6 }):nl()
       end
-      self:append(vim.trim(msg), dimmed and "LazyDimmed" or nil):highlight({
-        ["#%d+"] = "LazyCommitIssue",
-        ["^%S+:"] = dimmed and "Bold" or "LazyCommitType",
-        ["^%S+(%(.*%))!?:"] = "LazyCommitScope",
-        ["`.-`"] = "@markup.raw.markdown_inline",
-        ["%*.-%*"] = "Italic",
-        ["%*%*.-%*%*"] = "Bold",
-      })
-      self:append(" " .. time, "LazyComment")
-      self:nl()
     end
     self:nl()
   end
@@ -511,6 +539,11 @@ function M:details(plugin)
       table.insert(props, { "commit", git.commit:sub(1, 7), "LazyCommit" })
     end
   end
+  local rocks = require("lazy.pkg.rockspec").deps(plugin)
+  if rocks then
+    table.insert(props, { "rocks", vim.inspect(rocks) })
+  end
+
   if Util.file_exists(plugin.dir .. "/README.md") then
     table.insert(props, { "readme", "README.md" })
   end
