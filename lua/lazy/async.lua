@@ -9,7 +9,6 @@ local M = {}
 M._queue = {}
 M._executor = assert(vim.loop.new_check())
 M._running = false
-M.SLEEP = "sleep"
 ---@type Async
 M.current = nil
 
@@ -38,6 +37,7 @@ function Async:sleep(ms)
   vim.defer_fn(function()
     self.sleeping = false
   end, ms)
+  coroutine.yield()
 end
 
 function Async:suspend()
@@ -62,9 +62,7 @@ function Async:step()
         self.opts.on_error(tostring(res))
       end
     elseif res then
-      if res == M.SLEEP then
-        self.sleeping = true
-      elseif self.opts.on_yield then
+      if self.opts.on_yield then
         self.opts.on_yield(res)
       end
     end
@@ -128,6 +126,13 @@ function M.wrap(fn, opts)
     end
     return M.run(wrapped, opts)
   end
+end
+
+---@async
+---@param ms number
+function M.sleep(ms)
+  assert(M.current, "Not in an async context")
+  M.current:sleep(ms)
 end
 
 return M

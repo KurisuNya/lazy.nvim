@@ -75,16 +75,8 @@ function Task:status()
   return msg ~= "" and msg or nil
 end
 
-function Task:has_started()
-  return self._started ~= nil
-end
-
-function Task:has_ended()
-  return self._ended ~= nil
-end
-
 function Task:is_running()
-  return not self:has_ended()
+  return self._ended == nil
 end
 
 function Task:has_errors()
@@ -103,8 +95,8 @@ end
 ---@private
 ---@param task LazyTaskFn
 function Task:_start(task)
-  assert(not self:has_started(), "task already started")
-  assert(not self:has_ended(), "task already done")
+  assert(not self._started, "task already started")
+  assert(not self._ended, "task already done")
 
   if Config.headless() and Config.options.headless.task then
     self:log("Running task " .. self.name, vim.log.levels.INFO)
@@ -171,8 +163,8 @@ end
 
 ---@private
 function Task:_done()
-  assert(self:has_started(), "task not started")
-  assert(not self:has_ended(), "task already done")
+  assert(self._started, "task not started")
+  assert(not self._ended, "task already done")
 
   if self._running and self._running:running() then
     return
@@ -194,10 +186,10 @@ function Task:_done()
 end
 
 function Task:time()
-  if not self:has_started() then
+  if not self._started then
     return 0
   end
-  if not self:has_ended() then
+  if not self._ended then
     return (vim.uv.hrtime() - self._started) / 1e6
   end
   return (self._ended - self._started) / 1e6
@@ -225,16 +217,13 @@ function Task:spawn(cmd, opts)
   self._running:suspend()
 
   local running = true
-  local ret = true
+  local ret = { ok = true, output = "" }
   ---@param output string
   function opts.on_exit(ok, output)
     if not headless then
       self:log(vim.trim(output), ok and vim.log.levels.DEBUG or vim.log.levels.ERROR)
     end
-    if on_exit then
-      pcall(on_exit, ok, output)
-    end
-    ret = ok
+    ret = { ok = ok, output = output }
     running = false
     self._running:resume()
   end
@@ -249,7 +238,11 @@ function Task:spawn(cmd, opts)
   Process.spawn(cmd, opts)
   coroutine.yield()
   assert(not running, "process still running?")
-  return ret
+  if on_exit then
+    pcall(on_exit, ret.ok, ret.output)
+  end
+  coroutine.yield()
+  return ret.ok
 end
 
 function Task:prefix()
