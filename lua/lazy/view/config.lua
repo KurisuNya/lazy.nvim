@@ -34,6 +34,8 @@ M.keys = {
   profile_filter = "<C-f>",
   hover = "<C-h>",
   abort = "<C-c>",
+  next = "]]",
+  prev = "[[",
 }
 
 ---@type table<string,LazyViewCommand>
