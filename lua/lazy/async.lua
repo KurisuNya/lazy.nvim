@@ -1,11 +1,14 @@
+local Util = require("lazy.core.util")
+
 local M = {}
 
 ---@type Async[]
-M._queue = {}
-M._executor = assert(vim.loop.new_timer())
+M._active = {}
+---@type Async[]
+M._suspended = {}
+M._executor = assert(vim.loop.new_check())
 
-M.TIMER = 10
-M.BUDGET = 100
+M.BUDGET = 10
 
 ---@type table<thread, Async>
 M._threads = setmetatable({}, { __mode = "k" })
@@ -42,11 +45,6 @@ function Async:init(fn)
   return M.add(self)
 end
 
-function Async:restart()
-  assert(not self:running(), "Cannot restart a running async")
-  self:init(self._fn)
-end
-
 ---@param event AsyncEvent
 ---@param cb async fun(res:any, async:Async)
 function Async:on(event, cb)
@@ -77,27 +75,41 @@ function Async:sleep(ms)
 end
 
 ---@async
-function Async:suspend()
+---@param yield? boolean
+function Async:suspend(yield)
   self._suspended = true
-  if coroutine.running() == self._co then
-    coroutine.yield()
+  if coroutine.running() == self._co and yield ~= false then
+    M.yield()
   end
 end
 
 function Async:resume()
   self._suspended = false
+  M._run()
 end
 
-function Async:wait()
+---@async
+---@param yield? boolean
+function Async:wake(yield)
   local async = M.running()
+  assert(async, "Not in an async context")
+  self:on("done", function()
+    async:resume()
+  end)
+  async:suspend(yield)
+end
+
+---@async
+function Async:wait()
   if coroutine.running() == self._co then
     error("Cannot wait on self")
   end
 
-  while self:running() do
-    if async then
-      coroutine.yield()
-    else
+  local async = M.running()
+  if async then
+    self:wake()
+  else
+    while self:running() do
       vim.wait(10)
     end
   end
@@ -120,34 +132,73 @@ function Async:step()
   return self:running()
 end
 
+function M.abort()
+  for _, async in ipairs(M._active) do
+    coroutine.resume(async._co, "abort")
+  end
+end
+
+function M.yield()
+  if coroutine.yield() == "abort" then
+    error("aborted", 2)
+  end
+end
+
 function M.step()
-  local budget = M.BUDGET * 1e6
   local start = vim.uv.hrtime()
-  local count = #M._queue
-  local i = 0
-  while #M._queue > 0 and vim.uv.hrtime() - start < budget do
-    ---@type Async
-    local state = table.remove(M._queue, 1)
-    if state:step() then
-      table.insert(M._queue, state)
-    end
-    i = i + 1
-    if i >= count then
+  for _ = 1, #M._active do
+    if Util.exiting() or vim.uv.hrtime() - start > M.BUDGET * 1e6 then
       break
     end
+
+    local state = table.remove(M._active, 1)
+    if state:step() then
+      if state._suspended then
+        table.insert(M._suspended, state)
+      else
+        table.insert(M._active, state)
+      end
+    end
   end
-  if #M._queue == 0 then
+  for _ = 1, #M._suspended do
+    local state = table.remove(M._suspended, 1)
+    table.insert(state._suspended and M._suspended or M._active, state)
+  end
+
+  -- M.debug()
+  if #M._active == 0 or Util.exiting() then
     return M._executor:stop()
   end
 end
 
+function M.debug()
+  local lines = {
+    "- active: " .. #M._active,
+    "- suspended: " .. #M._suspended,
+  }
+  for _, async in ipairs(M._active) do
+    local info = debug.getinfo(async._fn)
+    local file = vim.fn.fnamemodify(info.short_src:sub(1), ":~:.")
+    table.insert(lines, ("%s:%d"):format(file, info.linedefined))
+    if #lines > 10 then
+      break
+    end
+  end
+  local msg = table.concat(lines, "\n")
+  M._notif = vim.notify(msg, nil, { replace = M._notif })
+end
+
 ---@param async Async
 function M.add(async)
-  table.insert(M._queue, async)
-  if not M._executor:is_active() then
-    M._executor:start(1, M.TIMER, vim.schedule_wrap(M.step))
-  end
+  table.insert(M._active, async)
+  M._run()
   return async
+end
+
+function M._run()
+  if not Util.exiting() and not M._executor:is_active() then
+    M._executor:start(vim.schedule_wrap(M.step))
+  end
 end
 
 function M.running()

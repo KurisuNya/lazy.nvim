@@ -1,5 +1,5 @@
----@module 'luassert'
 --# selene:allow(incorrect_standard_library_use)
+local Async = require("lazy.async")
 local Task = require("lazy.manage.task")
 
 describe("task", function()
@@ -43,7 +43,7 @@ describe("task", function()
     local running = true
     ---@async
     local task = Task.new(plugin, "test", function()
-      coroutine.yield()
+      Async.yield()
       running = false
     end, opts)
     assert(task:running())
