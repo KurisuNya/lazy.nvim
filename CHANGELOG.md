@@ -1,5 +1,19 @@
 # Changelog
 
+## [11.10.2](https://github.com/folke/lazy.nvim/compare/v11.10.1...v11.10.2) (2024-07-07)
+
+
+### Bug Fixes
+
+* **git:** only check for new commits for local plugins. Closes [#1512](https://github.com/folke/lazy.nvim/issues/1512) ([81d2bff](https://github.com/folke/lazy.nvim/commit/81d2bfffdc8c84a40d25cae7fd4800178c19a138))
+
+## [11.10.1](https://github.com/folke/lazy.nvim/compare/v11.10.0...v11.10.1) (2024-07-05)
+
+
+### Bug Fixes
+
+* **lockfile:** keep cond=false and enabed=false in lockfile. Fixes [#1535](https://github.com/folke/lazy.nvim/issues/1535). Fixes [#1606](https://github.com/folke/lazy.nvim/issues/1606) ([baac551](https://github.com/folke/lazy.nvim/commit/baac5517770abd6eee63d11cf4791ef5bf5702e8))
+
 ## [11.10.0](https://github.com/folke/lazy.nvim/compare/v11.9.2...v11.10.0) (2024-07-04)
 
 
