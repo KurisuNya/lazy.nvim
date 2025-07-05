@@ -187,24 +187,34 @@ function M:help()
 
   self:append("Use "):append(ViewConfig.keys.abort, "LazySpecial"):append(" to abort all running tasks."):nl():nl()
 
-  self:append("You can press "):append("<CR>", "LazySpecial"):append(" on a plugin to show its details."):nl():nl()
+  self
+    :append("You can press ")
+    :append(ViewConfig.keys.details, "LazySpecial")
+    :append(" on a plugin to show its details.")
+    :nl()
+    :nl()
 
   self:append("Most properties can be hovered with ")
-  self:append("<K>", "LazySpecial")
+  self:append(ViewConfig.keys.hover, "LazySpecial")
   self:append(" to open links, help files, readmes and git commits."):nl()
   self
     :append("When hovering with ")
-    :append("<K>", "LazySpecial")
+    :append(ViewConfig.keys.hover, "LazySpecial")
     :append(" on a plugin anywhere else, a diff will be opened if there are updates")
     :nl()
   self:append("or the plugin was just updated. Otherwise the plugin webpage will open."):nl():nl()
 
-  self:append("Use "):append("<d>", "LazySpecial"):append(" on a commit or plugin to open the diff view"):nl():nl()
   self
     :append("Use ")
-    :append("<]]>", "LazySpecial")
+    :append(ViewConfig.keys.diff, "LazySpecial")
+    :append(" on a commit or plugin to open the diff view")
+    :nl()
+    :nl()
+  self
+    :append("Use ")
+    :append(ViewConfig.keys.next, "LazySpecial")
     :append(" and ")
-    :append("<[[>", "LazySpecial")
+    :append(ViewConfig.keys.prev, "LazySpecial")
     :append(" to navigate between plugins")
     :nl()
     :nl()

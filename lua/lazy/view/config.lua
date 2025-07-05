@@ -158,4 +158,8 @@ M.commands = {
   },
 }
 
+local Config = require("lazy.core.config")
+M.keys = vim.tbl_deep_extend("force", M.keys, Config.options.ui.view.keys or {})
+M.commands = vim.tbl_deep_extend("force", M.commands, Config.options.ui.view.commands or {})
+
 return M
